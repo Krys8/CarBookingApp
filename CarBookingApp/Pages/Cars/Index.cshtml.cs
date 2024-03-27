@@ -1,37 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
+using CarBookingApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarBookingApp.Pages.Cars
 {
     public class IndexModel : PageModel
     {
         #region Fields
-        private readonly IConfiguration _configuration;
+        private readonly CarBookingApp.Data.CarBookingAppDbContext _context;
         #endregion
 
         #region Constructors
-        public IndexModel(IConfiguration configuration)
+        public IndexModel(CarBookingApp.Data.CarBookingAppDbContext context)
         {
-            this._configuration = configuration;
-        }
-        #endregion
-
-        #region Public methods
-        public void OnGet()
-        {
-            Heading = "List of Cars - From Variable";
-            Message = _configuration["Message"];
+            _context = context;
         }
         #endregion
 
         #region Properties
-        public string Heading { get; set; }
-        public string Message { get; set; }
-        public string Reason { get; set; }
+        public IList<Car> Cars { get; set; }
         #endregion
-
-
-
+        #region Public methods
+        public async Task OnGetAsync()
+        {
+           Cars = await _context.Cars.ToListAsync();
+        }
+        public async Task<IActionResult> OnPostDeleteAsync(int? carid)
+        {
+            if (carid == null)
+            {
+                return NotFound();
+            }
+            var car = await _context.Cars.FindAsync(carid);
+            
+            if(car != null)
+            {
+                _context.Cars.Remove(car);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToPage("./Index");
+        }
+        #endregion
+        
     }
 }
