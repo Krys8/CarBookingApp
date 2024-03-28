@@ -1,19 +1,18 @@
 using CarBookingApp.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarBookingApp.Pages.Cars
+namespace CarBookingApp.Pages.Makes
 {
-    public class UpdateModel : PageModel
+    public class DeleteModel : PageModel
     {
         #region
         private readonly CarBookingApp.Data.CarBookingAppDbContext _context;
         #endregion
 
         #region Constructors
-        public UpdateModel(CarBookingApp.Data.CarBookingAppDbContext context)
+        public DeleteModel(CarBookingApp.Data.CarBookingAppDbContext context)
         {
             _context = context;
         }
@@ -22,7 +21,6 @@ namespace CarBookingApp.Pages.Cars
         #region Properties
         [BindProperty]
         public Car Car { get; set; }
-        public SelectList Makes { get; set; }
         #endregion
 
         #region Public methods
@@ -34,43 +32,27 @@ namespace CarBookingApp.Pages.Cars
             {
                 return NotFound();
             }
-
-            Makes = new SelectList(_context.Makes.ToList(), "Id", "Name");
-           
             return Page();
 
         }
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Car).State = EntityState.Modified;
+            Car = await _context.Cars.FindAsync(id);
 
-            try
+            if (Car == null)
             {
+                _context.Cars.Remove(Car);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CarExists(Car.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
             return RedirectToPage("./Index");
-        }
-
-        private bool CarExists(int id)
-        {
-            return _context.Cars.Any(e => e.Id == id);
         }
         #endregion
     }
 }
+
+

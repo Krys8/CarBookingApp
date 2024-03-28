@@ -7,12 +7,27 @@ using System.Threading.Tasks;
 
 namespace CarBookingApp.Data
 {
-    public class Car
+    public class Car: BaseDomainEntity
     {
-        public int Id { get; set; }
-        public int Year { get; set; }
+        #region Properties
+        
         [Required]
-        [StringLength(150, ErrorMessage = "Name is too long" )]
-        public string Name { get; set; }= string.Empty;
+        [Range(1990,2023)]
+        public int Year { get; set; }
+        
+        public int? MakeId { get; set; }
+        public virtual Make Make { get; set; }
+
+
+        public virtual CarModel CarModel { get; set; }
+        public int? ModelId { get; set; }
+
+        public int? ColourId { get; set; }
+        public virtual Colour Colour { get; set; }
+
+        #endregion
+
+
+
     }
 }

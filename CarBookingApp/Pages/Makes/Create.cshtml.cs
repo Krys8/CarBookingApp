@@ -2,8 +2,9 @@ using CarBookingApp.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
-namespace CarBookingApp.Pages.Cars
+namespace CarBookingApp.Pages.Makes
 {
     public class CreateModel : PageModel
     {
@@ -28,6 +29,7 @@ namespace CarBookingApp.Pages.Cars
         #region Public methods
         public async Task<IActionResult> OnGet()
         {
+           await LoadInitialData();
             return Page();
         }
 
@@ -35,6 +37,7 @@ namespace CarBookingApp.Pages.Cars
         {
             if (!ModelState.IsValid)
             {
+               await LoadInitialData();
                 return Page();
             }
 
@@ -44,7 +47,11 @@ namespace CarBookingApp.Pages.Cars
             return RedirectToPage("./Index");
         }
 
-       
+        private async Task LoadInitialData()
+        {
+            Makes = new SelectList(await _context.Makes.ToListAsync(), "Id", "Name");
+
+        }
         #endregion
 
     }

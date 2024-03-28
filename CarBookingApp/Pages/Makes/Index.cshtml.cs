@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using CarBookingApp.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarBookingApp.Pages.Cars
+namespace CarBookingApp.Pages.Makes
 {
     public class IndexModel : PageModel
     {

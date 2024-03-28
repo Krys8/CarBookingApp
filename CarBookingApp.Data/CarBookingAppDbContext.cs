@@ -11,6 +11,7 @@ namespace CarBookingApp.Data
     {
         #region Properties
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Make> Makes { get; set; }
         #endregion
 
         #region Constructors
